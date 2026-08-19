@@ -1,0 +1,36 @@
+CLIENT ENGINE - URL MAP
+
+PRODUCTION BASE DOMAIN
+Replace YOUR-DOMAIN with the real deployed AXION domain.
+
+THUMBNAIL IMAGE URL
+https://YOUR-DOMAIN/products/client-engine/thumbnail.png
+
+PREVIEW SCREENSHOTS (comma-separated)
+https://YOUR-DOMAIN/products/client-engine/previews/client-engine-preview-cover.png,
+https://YOUR-DOMAIN/products/client-engine/previews/client-engine-preview-01.png,
+https://YOUR-DOMAIN/products/client-engine/previews/client-engine-preview-02.png,
+https://YOUR-DOMAIN/products/client-engine/previews/client-engine-preview-03.png
+
+PRODUCT PAGE (app route generated from slug)
+https://YOUR-DOMAIN/products/client-engine
+
+SUPPORT URL (once deployed)
+https://YOUR-DOMAIN/contact
+
+DOCS URL
+Leave blank for now unless you intentionally create a public documentation page.
+
+PREVIEW/DEMO URL
+Leave blank. No public demo is supplied by the Client Engine materials.
+
+DOWNLOAD URL
+Leave blank until the real Lemon Squeezy product/checkout destination exists.
+
+LEMON SQUEEZY VARIANT ID
+Leave blank until the real Lemon Squeezy variant exists.
+
+SOURCE-BACKED NOTION DASHBOARD URL
+https://glowing-fibula-314.notion.site/Start-Here-3a8c3147da1480f6bd3fea90a35a4ed4?source=copy_link
+
+This Notion URL is the dashboard URL explicitly printed in the Client Engine PDF. It is product-delivery material, so do not expose it publicly unless that is intentional.

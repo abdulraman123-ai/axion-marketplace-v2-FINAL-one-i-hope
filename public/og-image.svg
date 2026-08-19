@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Axion Marketplace preview">
+  <rect width="1200" height="630" fill="#0a0a0a" />
+  <rect x="80" y="80" width="1040" height="470" rx="36" fill="#111111" stroke="#2a2a2a" stroke-width="2" />
+  <path d="M180 430h300v56H180z" fill="#3b82f6" />
+  <path d="M520 230h360v44H520z" fill="#ffffff" fill-opacity="0.92" />
+  <path d="M520 300h280v32H520z" fill="#a1a1aa" />
+  <path d="M520 352h320v32H520z" fill="#a1a1aa" />
+  <text x="180" y="220" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="600">Axion Marketplace</text>
+  <text x="180" y="278" fill="#a1a1aa" font-family="Inter, Arial, sans-serif" font-size="28">Premium digital products for modern teams</text>
+</svg>
