@@ -55,8 +55,6 @@ export default function SignInClient() {
     try {
       const supabase = createClient();
 
-      await supabase.auth.signOut();
-
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
