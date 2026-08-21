@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { paymentProvider } from "@/lib/payments/lemonsqueezy";
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/env";
+import { getSiteUrl } from "@/lib/site";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -125,7 +126,7 @@ export async function POST(request: NextRequest) {
       productId,
       userId: user.id,
       userEmail: user.email,
-      redirectUrl: `${new URL(request.url).origin}/checkout/success`,
+      redirectUrl: `${getSiteUrl()}/checkout/success`,
     });
     return NextResponse.json({ checkoutUrl: session.checkoutUrl });
   } catch (err) {

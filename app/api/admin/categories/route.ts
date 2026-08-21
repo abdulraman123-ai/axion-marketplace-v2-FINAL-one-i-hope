@@ -7,7 +7,9 @@ import { logAuditEvent } from "@/lib/audit";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const roles = await getCurrentUserRoles();
   if (!roles.includes("admin")) {
@@ -65,6 +67,7 @@ export async function POST(request: NextRequest) {
 
   await logAuditEvent({
     action: "category_created",
+    actorUserId: user?.id ?? null,
     targetType: "category",
     targetId: category?.id ?? null,
     metadata: { name: name.trim(), slug: slug.trim() },

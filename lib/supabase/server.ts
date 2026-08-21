@@ -130,7 +130,7 @@ export async function createClient() {
             );
           } catch {
             // Server Components can't set cookies directly — this is
-            // expected and safe to ignore as long as middleware.ts (added
+            // expected and safe to ignore as long as proxy.ts (added
             // in Milestone 6) is refreshing sessions on every request.
           }
         },

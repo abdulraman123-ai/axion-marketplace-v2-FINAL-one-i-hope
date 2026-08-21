@@ -120,6 +120,7 @@ export async function POST(request: NextRequest) {
 
   await logAuditEvent({
     action: "product_created",
+    actorUserId: user?.id ?? null,
     targetType: "product",
     targetId: product.id,
     metadata: { name: product.name, price_cents: priceCents },

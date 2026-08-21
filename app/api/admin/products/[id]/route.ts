@@ -157,7 +157,9 @@ export async function DELETE(
 ) {
   const { id } = await params;
   const supabase = await createClient();
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const roles = await getCurrentUserRoles();
   if (!roles.includes("admin")) {
@@ -182,6 +184,7 @@ export async function DELETE(
 
   await logAuditEvent({
     action: "product_deleted",
+    actorUserId: user?.id ?? null,
     targetType: "product",
     targetId: id,
     metadata: { name: product?.name ?? null },

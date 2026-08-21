@@ -4,6 +4,7 @@ import { getCurrentUserRoles } from "@/lib/admin";
 
 export async function logAuditEvent(params: {
   action: string;
+  actorUserId?: string | null;
   targetType?: string;
   targetId?: string;
   metadata?: Record<string, any>;
@@ -17,10 +18,8 @@ export async function logAuditEvent(params: {
 
   const serviceClient = createServiceClient(supabaseUrl, serviceRoleKey);
 
-  const { data: { user } } = await serviceClient.auth.getUser();
-
   await serviceClient.from("audit_logs").insert({
-    actor_user_id: user?.id ?? null,
+    actor_user_id: params.actorUserId ?? null,
     action: params.action,
     target_type: params.targetType ?? null,
     target_id: params.targetId ?? null,

@@ -11,7 +11,9 @@ export async function PUT(
 ) {
   const { id } = await params;
   const supabase = await createClient();
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const roles = await getCurrentUserRoles();
   if (!roles.includes("admin")) {
@@ -70,6 +72,7 @@ export async function PUT(
 
   await logAuditEvent({
     action: "category_updated",
+    actorUserId: user?.id ?? null,
     targetType: "category",
     targetId: id,
     metadata: { name: typeof name === "string" ? name : null, slug: typeof slug === "string" ? slug : null },
@@ -84,7 +87,9 @@ export async function DELETE(
 ) {
   const { id } = await params;
   const supabase = await createClient();
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const roles = await getCurrentUserRoles();
   if (!roles.includes("admin")) {
@@ -102,6 +107,7 @@ export async function DELETE(
 
   await logAuditEvent({
     action: "category_deleted",
+    actorUserId: user?.id ?? null,
     targetType: "category",
     targetId: id,
   });

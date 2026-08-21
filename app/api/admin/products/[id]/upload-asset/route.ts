@@ -12,7 +12,9 @@ export async function POST(
   const { id } = await params;
 
   const supabase = await createClient();
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const roles = await getCurrentUserRoles();
   if (!roles.includes("admin")) {
@@ -62,6 +64,7 @@ export async function POST(
 
   await logAuditEvent({
     action: "product_asset_uploaded",
+    actorUserId: user?.id ?? null,
     targetType: "product",
     targetId: id,
     metadata: { file_name: file.name, file_size: file.size, type: assetType },

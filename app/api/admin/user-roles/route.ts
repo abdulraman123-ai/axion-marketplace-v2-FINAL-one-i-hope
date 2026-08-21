@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
 
   await logAuditEvent({
     action: "role_assigned",
+    actorUserId: user?.id ?? null,
     targetType: "user_role",
     targetId: `${userId.trim()}:${roleId.trim()}`,
     metadata: { user_id: userId.trim(), role_id: roleId.trim() },
@@ -134,6 +135,7 @@ export async function DELETE(request: NextRequest) {
 
   await logAuditEvent({
     action: "role_removed",
+    actorUserId: user?.id ?? null,
     targetType: "user_role",
     targetId: `${userId.trim()}:${roleId.trim()}`,
     metadata: { user_id: userId.trim(), role_id: roleId.trim() },
