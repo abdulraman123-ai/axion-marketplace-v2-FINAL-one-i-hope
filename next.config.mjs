@@ -33,7 +33,6 @@ const securityHeaders = [
 const nextConfig = {
   poweredByHeader: false,
   compress: true,
-  output: "standalone",
   experimental: {
     optimizePackageImports: ["lucide-react", "@tabler/icons-react"],
   },
