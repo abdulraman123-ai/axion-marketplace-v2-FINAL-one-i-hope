@@ -25,6 +25,9 @@ function createFallbackQueryBuilder<T>(data: T | null = null, error: { message: 
     order() {
       return builder;
     },
+    limit() {
+      return builder;
+    },
     insert() {
       return createFallbackQueryBuilder<T>(null, {
         message: "Supabase is not configured yet.",
