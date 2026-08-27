@@ -93,6 +93,9 @@ export default function SignInClient() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-sm flex-1 flex-col justify-center px-6">
+      <p className="mb-2 text-sm font-medium uppercase tracking-[0.24em] text-accent">
+        AXION
+      </p>
       <h1 className="text-3xl font-semibold tracking-tight text-text-primary">
         Sign in
       </h1>
@@ -102,6 +105,8 @@ export default function SignInClient() {
           type="email"
           required
           autoComplete="email"
+          name="email"
+          id="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -111,6 +116,8 @@ export default function SignInClient() {
           type="password"
           required
           autoComplete="current-password"
+          name="password"
+          id="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
