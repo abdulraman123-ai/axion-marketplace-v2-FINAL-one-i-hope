@@ -178,16 +178,6 @@ export default async function ProductPage({
                 Live Preview
               </a>
             )}
-            {product.documentation_url && (
-              <a
-                href={product.documentation_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent underline"
-              >
-                Documentation
-              </a>
-            )}
             {product.support_url && (
               <a
                 href={product.support_url}
