@@ -11,35 +11,45 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+  let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
       },
-      setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
+      setAll(
+        cookiesToSet: { name: string; value: string; options?: CookieOptions }[],
+        headers
+      ) {
         cookiesToSet.forEach(({ name, value }) =>
           request.cookies.set(name, value)
         );
+
+        supabaseResponse = NextResponse.next({ request });
+
         cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options)
+          supabaseResponse.cookies.set(name, value, options)
+        );
+
+        Object.entries(headers).forEach(([key, value]) =>
+          supabaseResponse.headers.set(key, value)
         );
       },
     },
   });
 
   try {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data, error } = await supabase.auth.getClaims();
+
+    if (error) {
+      throw error;
+    }
+
+    const claims = data?.claims ?? null;
 
     const pathname = request.nextUrl.pathname;
-    if (pathname.startsWith("/admin") && !user) {
+    if (pathname.startsWith("/admin") && !claims) {
       const url = request.nextUrl.clone();
       url.pathname = "/sign-in";
       url.searchParams.set("next", pathname);
@@ -49,7 +59,7 @@ export async function proxy(request: NextRequest) {
     // Session refresh failed — pass through rather than breaking the route.
   }
 
-  return response;
+  return supabaseResponse;
 }
 
 export const matcher = [
