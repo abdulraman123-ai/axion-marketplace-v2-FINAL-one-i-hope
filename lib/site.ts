@@ -3,5 +3,5 @@
 // production domain. This is safe for use in server components and email
 // templates because the value is a public-facing origin, not a secret.
 export function getSiteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL ?? "https://axionmarketplace.com";
+  return process.env.NEXT_PUBLIC_SITE_URL ?? "https://axion-marketplace-v2-final-one-i-ho.vercel.app";
 }
