@@ -29,6 +29,32 @@ export async function POST(
     return NextResponse.json({ error: "File is required." }, { status: 400 });
   }
 
+  const allowedImageTypes = new Set([
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "image/svg+xml",
+    "image/bmp",
+    "image/tiff",
+  ]);
+
+  const maxImageSize = 10 * 1024 * 1024;
+
+  if (!allowedImageTypes.has(file.type)) {
+    return NextResponse.json(
+      { error: `Unsupported image type: ${file.type}. Allowed types: JPEG, PNG, WebP, GIF, SVG, BMP, TIFF.` },
+      { status: 400 }
+    );
+  }
+
+  if (file.size > maxImageSize) {
+    return NextResponse.json(
+      { error: `Image is too large. Maximum size is 10 MB.` },
+      { status: 400 }
+    );
+  }
+
   const supabaseUrl = getSupabaseUrl();
   const serviceRoleKey = getSupabaseServiceRoleKey();
 
@@ -53,15 +79,6 @@ export async function POST(
     return NextResponse.json({ error: "Failed to upload file." }, { status: 500 });
   }
 
-  const { data: signedUrlData, error: signedUrlError } = await serviceClient.storage
-    .from("product-files")
-    .createSignedUrl(filePath, 31536000);
-
-  if (signedUrlError || !signedUrlData?.signedUrl) {
-    await serviceClient.storage.from("product-files").remove([filePath]);
-    return NextResponse.json({ error: "Failed to generate signed URL." }, { status: 500 });
-  }
-
   await logAuditEvent({
     action: "product_asset_uploaded",
     actorUserId: user?.id ?? null,
@@ -70,5 +87,5 @@ export async function POST(
     metadata: { file_name: file.name, file_size: file.size, type: assetType },
   });
 
-  return NextResponse.json({ success: true, path: filePath, signedUrl: signedUrlData.signedUrl });
+  return NextResponse.json({ success: true, path: filePath });
 }

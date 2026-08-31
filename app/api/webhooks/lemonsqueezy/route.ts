@@ -85,7 +85,12 @@ export async function POST(request: NextRequest) {
   // Determine the price to record. We prefer the product's CURRENT price as
   // the source of truth for the database, but fall back to the webhook's
   // total if the product row lacks a price (shouldn't happen, but safe).
-  const recordedPrice = product.price_cents > 0 ? product.price_cents : event.totalCents;
+  const recordedPrice =
+    typeof event.totalCents === "number" && event.totalCents > 0
+      ? event.totalCents
+      : product.price_cents > 0
+        ? product.price_cents
+        : event.totalCents;
 
   // Build the order row. lemon_squeezy_order_id is the idempotency key — a
   // unique index (added in migration 0002) prevents duplicate webhook

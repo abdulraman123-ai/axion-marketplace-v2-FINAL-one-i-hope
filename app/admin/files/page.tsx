@@ -1,7 +1,7 @@
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { FounderConsolePage } from "@/components/admin/founder-console-page";
 import { ConsoleCard } from "@/components/admin/console-card";
-import { Button } from "@/components/ui/button";
+import { FileUploadForm } from "@/components/admin/file-upload-form";
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/env";
 
 interface FileRow {
@@ -56,33 +56,7 @@ export default async function AdminFilesPage() {
           </span>
         }
       >
-        <form action="/api/admin/files/upload" method="POST" encType="multipart/form-data" className="mt-6 flex flex-col gap-4 rounded-xl border border-border p-4">
-          <p className="text-sm font-medium text-text-primary">Upload file</p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-text-primary">Product</label>
-              <select name="productId" required className="h-10 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text-primary">
-                <option value="">Select a product</option>
-                {products.map((p) => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-text-primary">File</label>
-              <input type="file" name="file" required className="h-10 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text-primary" />
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-text-primary">Version (optional)</label>
-              <input type="text" name="version" placeholder="1.0.0" className="h-10 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text-primary" />
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-text-primary">File label (optional)</label>
-              <input type="text" name="fileLabel" placeholder="Main file" className="h-10 w-full rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text-primary" />
-            </div>
-          </div>
-          <Button type="submit">Upload</Button>
-        </form>
+        <FileUploadForm products={products} />
 
         {files.length === 0 ? (
           <div className="mt-6 py-12 text-center">

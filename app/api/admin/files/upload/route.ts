@@ -26,6 +26,46 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "File and product ID are required." }, { status: 400 });
   }
 
+  const allowedProductFileTypes = new Set([
+    "application/zip",
+    "application/x-zip-compressed",
+    "application/x-rar-compressed",
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "text/plain",
+    "text/markdown",
+    "application/json",
+    "application/javascript",
+    "application/x-httpd-php",
+    "text/css",
+    "text/html",
+    "application/x-tar",
+    "application/gzip",
+    "application/x-gzip",
+    "application/x-7z-compressed",
+  ]);
+
+  const maxProductFileSize = 100 * 1024 * 1024;
+
+  if (!allowedProductFileTypes.has(file.type)) {
+    return NextResponse.json(
+      { error: `Unsupported file type: ${file.type}. Allowed types: archives, documents, code, and text files.` },
+      { status: 400 }
+    );
+  }
+
+  if (file.size > maxProductFileSize) {
+    return NextResponse.json(
+      { error: `File is too large. Maximum size is 100 MB.` },
+      { status: 400 }
+    );
+  }
+
   const supabaseUrl = getSupabaseUrl();
   const serviceRoleKey = getSupabaseServiceRoleKey();
 

@@ -4,6 +4,7 @@ import { BuyButton } from "@/components/buy-button";
 import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
 import { cache } from "react";
+import { resolveProductImageUrl } from "@/lib/images";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -77,6 +78,10 @@ export default async function ProductPage({
   const screenshots = Array.isArray(product.screenshots)
     ? product.screenshots
     : [];
+  const resolvedImageUrl = (await resolveProductImageUrl(product.image_url)) ?? undefined;
+  const resolvedScreenshots = (await Promise.all(
+    screenshots.map((src) => resolveProductImageUrl(src))
+  )).filter((src): src is string => src !== null);
 
   return (
     <main className="mx-auto max-w-5xl flex-1 px-6 py-16 sm:px-12">
@@ -110,24 +115,24 @@ export default async function ProductPage({
             )}
           </div>
 
-          {product.image_url && (
+          {resolvedImageUrl && (
             <div className="overflow-hidden rounded-[1.35rem] border border-border/70 bg-surface/70">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={product.image_url}
+                src={resolvedImageUrl}
                 alt={product.name}
                 className="h-auto w-full object-cover"
               />
             </div>
           )}
 
-          {screenshots.length > 0 && (
+          {resolvedScreenshots.length > 0 && (
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-text-primary">
                 Screenshots
               </h2>
               <div className="grid gap-4 sm:grid-cols-2">
-                {screenshots.map((src, index) => (
+                {resolvedScreenshots.map((src, index) => (
                   <div
                     key={src + index}
                     className="overflow-hidden rounded-[1.35rem] border border-border/70 bg-surface/70"

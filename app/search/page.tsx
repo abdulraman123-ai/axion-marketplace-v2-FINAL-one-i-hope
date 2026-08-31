@@ -3,6 +3,7 @@ import { SiteNav } from "@/components/site-nav";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
+import { resolveProductImageUrl } from "@/lib/images";
 
 interface ProductsPageProps {
   searchParams: Promise<{ q?: string; category?: string }>;
@@ -56,6 +57,13 @@ export default async function SearchPage({ searchParams }: ProductsPageProps) {
   const categoryList = (categories ?? []) as Array<{ id: string; name: string; slug: string }>;
   const productList = (products ?? []) as Array<any>;
 
+  const resolvedProducts = await Promise.all(
+    productList.map(async (product) => ({
+      ...product,
+      resolvedImageUrl: await resolveProductImageUrl(product.image_url),
+    }))
+  );
+
   return (
     <div className="flex flex-1 flex-col">
       <SiteNav />
@@ -105,7 +113,7 @@ export default async function SearchPage({ searchParams }: ProductsPageProps) {
           </div>
         ) : (
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {productList.map((product) => (
+            {resolvedProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 slug={product.slug}
@@ -120,7 +128,7 @@ export default async function SearchPage({ searchParams }: ProductsPageProps) {
                       : undefined
                 }
                 category={product.categories?.name}
-                imageUrl={product.image_url ?? undefined}
+                imageUrl={product.resolvedImageUrl ?? undefined}
               />
             ))}
           </div>

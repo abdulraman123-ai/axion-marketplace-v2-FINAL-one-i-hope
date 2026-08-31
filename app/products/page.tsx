@@ -3,6 +3,7 @@ import { ProductCard } from "@/components/product-card";
 import { SiteNav } from "@/components/site-nav";
 import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
+import { resolveProductImageUrl } from "@/lib/images";
 
 interface Category {
   id: string;
@@ -76,6 +77,13 @@ export default async function ProductsPage({
   const categoryList = (categories ?? []) as Category[];
   const productList = (products ?? []) as ProductSummary[];
 
+  const resolvedProducts = await Promise.all(
+    productList.map(async (product) => ({
+      ...product,
+      resolvedImageUrl: await resolveProductImageUrl(product.image_url),
+    }))
+  );
+
   return (
     <div className="flex flex-1 flex-col">
       <SiteNav />
@@ -131,7 +139,7 @@ export default async function ProductsPage({
           </div>
         ) : (
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {productList.map((product) => (
+            {resolvedProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 slug={product.slug}
@@ -146,7 +154,7 @@ export default async function ProductsPage({
                       : undefined
                 }
                 category={product.categories?.name}
-                imageUrl={product.image_url ?? undefined}
+                imageUrl={product.resolvedImageUrl ?? undefined}
               />
             ))}
           </div>

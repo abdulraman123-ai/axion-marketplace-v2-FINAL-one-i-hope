@@ -57,8 +57,8 @@ export function AddProductForm({ initialData, categories = [] }: AddProductFormP
       throw new Error(data.error ?? "Failed to upload asset.");
     }
 
-    const data = await response.json();
-    return data.signedUrl as string;
+      const data = await response.json();
+      return data.path as string;
   }
 
   async function uploadProductFile(productId: string, file: File): Promise<string> {

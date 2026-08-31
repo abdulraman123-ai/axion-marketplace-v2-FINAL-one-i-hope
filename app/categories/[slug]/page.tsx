@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { SiteNav } from "@/components/site-nav";
 import type { Metadata } from "next";
+import { resolveProductImageUrl } from "@/lib/images";
 
 interface CategoryWithProducts {
   id: string;
@@ -63,6 +64,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const typedCategory = category as CategoryWithProducts;
   const products = (typedCategory.products ?? []).filter((p) => p.id);
 
+  const resolvedProducts = await Promise.all(
+    products.map(async (product) => ({
+      ...product,
+      resolvedImageUrl: await resolveProductImageUrl(product.image_url),
+    }))
+  );
+
   return (
     <div className="flex flex-1 flex-col">
       <SiteNav />
@@ -90,7 +98,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         ) : (
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {products.map((product) => (
+            {resolvedProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 slug={product.slug}
@@ -105,7 +113,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                       : undefined
                 }
                 category={product.categories?.name}
-                imageUrl={product.image_url ?? undefined}
+                imageUrl={product.resolvedImageUrl ?? undefined}
               />
             ))}
           </div>
