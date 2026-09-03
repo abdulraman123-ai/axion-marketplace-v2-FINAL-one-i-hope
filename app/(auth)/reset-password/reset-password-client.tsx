@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export default function ResetPasswordClient() {
   const searchParams = useSearchParams();
@@ -130,8 +130,7 @@ export default function ResetPasswordClient() {
           <label className="mb-2 block text-sm font-medium text-text-primary">
             New password
           </label>
-          <Input
-            type="password"
+          <PasswordInput
             required
             minLength={6}
             autoComplete="new-password"
@@ -144,8 +143,7 @@ export default function ResetPasswordClient() {
           <label className="mb-2 block text-sm font-medium text-text-primary">
             Confirm new password
           </label>
-          <Input
-            type="password"
+          <PasswordInput
             required
             minLength={6}
             autoComplete="new-password"

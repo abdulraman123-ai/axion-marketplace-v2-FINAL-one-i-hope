@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
     supportUrl?: unknown;
     lemonSqueezyVariantId?: unknown;
     previewUrl?: unknown;
+    selarUrl?: unknown;
     slug?: unknown;
   };
 
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const { name, description, shortSummary, priceCents, imageUrl, downloadUrl, screenshots, categoryId, isComingSoon, isPublished, isFeatured, version, changelog, docUrl, supportUrl, lemonSqueezyVariantId, previewUrl } = body;
+  const { name, description, shortSummary, priceCents, imageUrl, downloadUrl, screenshots, categoryId, isComingSoon, isPublished, isFeatured, version, changelog, docUrl, supportUrl, lemonSqueezyVariantId, previewUrl, selarUrl } = body;
 
   if (
     typeof name !== "string" ||
@@ -69,6 +70,33 @@ export async function POST(request: NextRequest) {
 
   const slugValue = name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
+  let validatedSelarUrl: string | null = null;
+  if (typeof selarUrl === "string" && selarUrl.trim()) {
+    const trimmed = selarUrl.trim();
+    try {
+      const parsed = new URL(trimmed);
+      if (parsed.protocol !== "https:") {
+        return NextResponse.json(
+          { error: "Selar URL must use HTTPS." },
+          { status: 400 }
+        );
+      }
+      const host = parsed.hostname.toLowerCase();
+      if (host !== "selar.com" && !host.endsWith(".selar.com")) {
+        return NextResponse.json(
+          { error: "Selar URL must be from the selar.com domain." },
+          { status: 400 }
+        );
+      }
+      validatedSelarUrl = parsed.toString();
+    } catch {
+      return NextResponse.json(
+        { error: "Selar URL must be a valid HTTPS URL." },
+        { status: 400 }
+      );
+    }
+  }
+
   const { data: product, error: productError } = await serviceClient
     .from("products")
     .insert({
@@ -88,6 +116,7 @@ export async function POST(request: NextRequest) {
       support_url: typeof supportUrl === "string" && supportUrl ? supportUrl : null,
       lemon_squeezy_variant_id: typeof lemonSqueezyVariantId === "string" && lemonSqueezyVariantId ? lemonSqueezyVariantId : null,
       preview_url: typeof previewUrl === "string" && previewUrl ? previewUrl : null,
+      selar_url: validatedSelarUrl,
       screenshots: Array.isArray(screenshots) ? screenshots : [],
     })
     .select()

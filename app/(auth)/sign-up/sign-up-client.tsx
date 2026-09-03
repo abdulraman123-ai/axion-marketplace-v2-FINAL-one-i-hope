@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Input } from "@/components/ui/input";
 
 export default function SignUpClient() {
@@ -51,7 +52,7 @@ export default function SignUpClient() {
     }
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -62,6 +63,11 @@ export default function SignUpClient() {
     if (error) {
       setError(error.message);
       setLoading(false);
+      return;
+    }
+
+    if (data.session) {
+      window.location.href = "/dashboard";
       return;
     }
 
@@ -98,9 +104,8 @@ export default function SignUpClient() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Input
+        <PasswordInput
           aria-label="Password"
-          type="password"
           required
           minLength={6}
           autoComplete="new-password"
@@ -108,9 +113,8 @@ export default function SignUpClient() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Input
+        <PasswordInput
           aria-label="Confirm Password"
-          type="password"
           required
           minLength={6}
           autoComplete="new-password"

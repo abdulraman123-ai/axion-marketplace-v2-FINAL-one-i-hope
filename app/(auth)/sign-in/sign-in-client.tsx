@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Input } from "@/components/ui/input";
 
 export default function SignInClient() {
@@ -111,9 +112,8 @@ export default function SignInClient() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Input
+        <PasswordInput
           aria-label="Password"
-          type="password"
           required
           autoComplete="current-password"
           name="password"
@@ -128,11 +128,6 @@ export default function SignInClient() {
         </Button>
       </form>
       <p className="mt-6 text-sm text-text-secondary">
-        <Link href="/forgot-password" className="text-accent underline">
-          Forgot password?
-        </Link>
-      </p>
-      <p className="mt-2 text-sm text-text-secondary">
         Don&apos;t have an account?{" "}
         <Link href="/sign-up" className="text-accent underline">
           Sign up

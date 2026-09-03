@@ -34,6 +34,7 @@ export function AddProductForm({ initialData, categories = [] }: AddProductFormP
   const [supportUrl, setSupportUrl] = useState(initialData?.support_url ?? "");
   const [lemonSqueezyVariantId, setLemonSqueezyVariantId] = useState(initialData?.lemon_squeezy_variant_id ?? "");
   const [previewUrl, setPreviewUrl] = useState(initialData?.preview_url ?? "");
+  const [selarUrl, setSelarUrl] = useState(initialData?.selar_url ?? "");
 
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
@@ -109,6 +110,7 @@ export function AddProductForm({ initialData, categories = [] }: AddProductFormP
           supportUrl,
           lemonSqueezyVariantId: lemonSqueezyVariantId || null,
           previewUrl: previewUrl || null,
+          selarUrl: selarUrl || null,
         }),
       });
 
@@ -315,6 +317,10 @@ export function AddProductForm({ initialData, categories = [] }: AddProductFormP
         <div>
           <label className="mb-2 block text-sm font-medium text-text-primary">Preview/Demo URL</label>
           <Input placeholder="https://..." type="url" value={previewUrl} onChange={(e) => setPreviewUrl(e.target.value)} />
+        </div>
+        <div>
+          <label className="mb-2 block text-sm font-medium text-text-primary">Selar Product URL</label>
+          <Input placeholder="https://selar.com/..." type="url" value={selarUrl} onChange={(e) => setSelarUrl(e.target.value)} />
         </div>
         <div className="sm:col-span-2">
           <label className="mb-2 block text-sm font-medium text-text-primary">Lemon Squeezy Variant ID</label>

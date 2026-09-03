@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
 
   const { data: product, error: productError } = await serviceClient
     .from("products")
-    .select("id, name, price_cents, is_published, is_coming_soon, lemon_squeezy_variant_id")
+    .select("id, name, price_cents, is_published, is_coming_soon, selar_url, lemon_squeezy_variant_id")
     .eq("id", productId)
     .maybeSingle();
 
@@ -114,9 +114,34 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (product.selar_url) {
+    try {
+      const parsed = new URL(product.selar_url);
+      if (parsed.protocol !== "https:") {
+        return NextResponse.json(
+          { error: "This product's checkout URL is not configured correctly." },
+          { status: 409 }
+        );
+      }
+      const host = parsed.hostname.toLowerCase();
+      if (host !== "selar.com" && !host.endsWith(".selar.com")) {
+        return NextResponse.json(
+          { error: "This product's checkout URL is not configured correctly." },
+          { status: 409 }
+        );
+      }
+      return NextResponse.json({ checkoutUrl: parsed.toString() });
+    } catch {
+      return NextResponse.json(
+        { error: "This product's checkout URL is not configured correctly." },
+        { status: 409 }
+      );
+    }
+  }
+
   if (!product.lemon_squeezy_variant_id) {
     return NextResponse.json(
-      { error: "This product isn't linked to a payment variant yet." },
+      { error: "This product isn't linked to a payment provider yet." },
       { status: 409 }
     );
   }
@@ -130,10 +155,6 @@ export async function POST(request: NextRequest) {
     });
     return NextResponse.json({ checkoutUrl: session.checkoutUrl });
   } catch (err) {
-    // Anything that goes wrong here — Lemon Squeezy not configured yet,
-    // a product with no linked variant, a network error — lands here.
-    // We log the real reason for you, but tell the customer something
-    // generic and non-technical.
     console.error("Checkout session creation failed:", err);
     return NextResponse.json(
       { error: "Could not start checkout. Please try again in a moment." },

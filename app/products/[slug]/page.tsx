@@ -2,9 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { BuyButton } from "@/components/buy-button";
 import { Button } from "@/components/ui/button";
+import { ProductCard } from "@/components/product-card";
 import type { Metadata } from "next";
 import { cache } from "react";
 import { resolveProductImageUrl } from "@/lib/images";
+import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/env";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -25,6 +27,27 @@ interface ProductDetail {
   documentation_url: string | null;
   support_url: string | null;
   preview_url: string | null;
+  category_id: string | null;
+  categories: { name: string; slug: string } | null;
+}
+
+interface ProductFile {
+  id: string;
+  file_name: string;
+  file_size: number | null;
+  version: string | null;
+}
+
+interface RelatedProduct {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  short_summary: string | null;
+  price_cents: number;
+  image_url: string | null;
+  is_featured: boolean;
+  is_coming_soon: boolean;
   categories: { name: string; slug: string } | null;
 }
 
@@ -33,7 +56,7 @@ const getProductBySlug = cache(async (slug: string) => {
   const { data: product } = await supabase
     .from("products")
     .select(
-      "id, name, description, short_summary, price_cents, image_url, screenshots, is_coming_soon, is_featured, version, changelog, documentation_url, support_url, preview_url, categories(name, slug)"
+      "id, name, description, short_summary, price_cents, image_url, screenshots, is_coming_soon, is_featured, version, changelog, documentation_url, support_url, preview_url, category_id, categories(name, slug)"
     )
     .eq("slug", slug)
     .eq("is_published", true)
@@ -41,6 +64,57 @@ const getProductBySlug = cache(async (slug: string) => {
 
   return product as ProductDetail | null;
 });
+
+async function getProductFiles(productId: string): Promise<ProductFile[]> {
+  const supabaseUrl = getSupabaseUrl();
+  const serviceRoleKey = getSupabaseServiceRoleKey();
+  if (!supabaseUrl || !serviceRoleKey) return [];
+
+  const { createClient: createServiceClient } = await import("@supabase/supabase-js");
+  const serviceClient = createServiceClient(supabaseUrl, serviceRoleKey);
+  const { data } = await serviceClient
+    .from("product_files")
+    .select("id, file_name, file_size, version")
+    .eq("product_id", productId)
+    .order("created_at", { ascending: true });
+
+  return (data ?? []) as ProductFile[];
+}
+
+async function getRelatedProducts(
+  productId: string,
+  categoryId: string | null
+): Promise<RelatedProduct[]> {
+  const supabase = await createClient();
+  let query = supabase
+    .from("products")
+    .select(
+      "id, name, slug, description, short_summary, price_cents, image_url, is_featured, is_coming_soon, categories(name, slug)"
+    )
+    .eq("is_published", true)
+    .neq("id", productId)
+    .limit(3);
+
+  if (categoryId) {
+    query = query.eq("category_id", categoryId);
+  }
+
+  const { data } = await query.order("created_at", { ascending: false });
+  return (data ?? []) as RelatedProduct[];
+}
+
+function formatFileSize(bytes: number | null): string {
+  if (!bytes) return "";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function getFileExtension(fileName: string): string {
+  const parts = fileName.split(".");
+  if (parts.length <= 1) return "";
+  return parts.pop()?.toUpperCase() ?? "";
+}
 
 export async function generateMetadata({
   params,
@@ -83,10 +157,49 @@ export default async function ProductPage({
     screenshots.map((src) => resolveProductImageUrl(src))
   )).filter((src): src is string => src !== null);
 
+  const [productFiles, relatedProducts] = await Promise.all([
+    getProductFiles(product.id),
+    product.categories
+      ? getRelatedProducts(product.id, product.category_id)
+      : Promise.resolve([]),
+  ]);
+
+  const resolvedRelatedProducts = await Promise.all(
+    relatedProducts.map(async (p) => ({
+      ...p,
+      resolvedImageUrl: await resolveProductImageUrl(p.image_url),
+    }))
+  );
+
   return (
     <main className="mx-auto max-w-5xl flex-1 px-6 py-16 sm:px-12">
       <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:items-start">
         <div className="space-y-8">
+          <nav aria-label="Breadcrumb" className="text-sm text-text-secondary">
+            <ol className="flex flex-wrap items-center gap-2">
+              <li>
+                <a href="/" className="hover:text-accent">Home</a>
+              </li>
+              {product.categories && (
+                <>
+                  <li aria-hidden="true">/</li>
+                  <li>
+                    <a
+                      href={`/categories/${product.categories.slug}`}
+                      className="hover:text-accent"
+                    >
+                      {product.categories.name}
+                    </a>
+                  </li>
+                </>
+              )}
+              <li aria-hidden="true">/</li>
+              <li className="text-text-primary" aria-current="page">
+                {product.name}
+              </li>
+            </ol>
+          </nav>
+
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-4xl font-semibold tracking-tight text-text-primary">
@@ -121,6 +234,8 @@ export default async function ProductPage({
               <img
                 src={resolvedImageUrl}
                 alt={product.name}
+                loading="lazy"
+                decoding="async"
                 className="h-auto w-full object-cover"
               />
             </div>
@@ -141,6 +256,8 @@ export default async function ProductPage({
                     <img
                       src={src}
                       alt={`${product.name} screenshot ${index + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       className="h-auto w-full object-cover"
                     />
                   </div>
@@ -171,15 +288,55 @@ export default async function ProductPage({
             </div>
           )}
 
-          <div className="flex flex-wrap gap-4 text-sm text-text-secondary">
+          {productFiles.length > 0 && (
+            <div className="space-y-3">
+              <h2 className="text-lg font-semibold text-text-primary">
+                What&apos;s included
+              </h2>
+              <ul className="space-y-2">
+                {productFiles.map((file) => (
+                  <li
+                    key={file.id}
+                    className="flex items-center justify-between rounded-xl border border-border/70 bg-surface/70 px-4 py-3 text-sm"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-text-primary">
+                        {file.file_name}
+                      </span>
+                      {file.version && (
+                        <span className="rounded-full border border-border/60 bg-background/70 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.15em] text-text-secondary">
+                          v{file.version}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-text-secondary">
+                      {getFileExtension(file.file_name) && (
+                        <span className="text-[11px] uppercase tracking-[0.15em]">
+                          {getFileExtension(file.file_name)}
+                        </span>
+                      )}
+                      {formatFileSize(file.file_size) && (
+                        <span className="text-xs">
+                          {formatFileSize(file.file_size)}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary">
             <span>Version {product.version}</span>
             {product.preview_url && (
               <a
                 href={product.preview_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent underline"
+                className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-subtle px-4 py-2 text-sm font-medium text-accent transition-colors hover:border-accent/50 hover:bg-accent-subtle/80"
               >
+                <span aria-hidden="true">↗</span>
                 Live Preview
               </a>
             )}
@@ -203,7 +360,7 @@ export default async function ProductPage({
                 <p className="text-[11px] uppercase tracking-[0.24em] text-text-secondary">
                   Price
                 </p>
-                <p className="mt-1 text-3xl font-semibold text-text-primary">
+                <p className="mt-1 text-3xl font-semibold text-accent">
                   ${(product.price_cents / 100).toFixed(2)}
                 </p>
               </div>
@@ -230,6 +387,34 @@ export default async function ProductPage({
           </div>
         </aside>
       </div>
+
+      {resolvedRelatedProducts.length > 0 && (
+        <section className="mt-16 space-y-6">
+          <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
+            You may also like
+          </h2>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {resolvedRelatedProducts.map((p) => (
+              <ProductCard
+                key={p.id}
+                slug={p.slug}
+                name={p.name}
+                description={p.short_summary ?? p.description}
+                priceCents={p.price_cents}
+                badge={
+                  p.is_coming_soon
+                    ? "Coming Soon"
+                    : p.is_featured
+                      ? "Featured"
+                      : undefined
+                }
+                category={p.categories?.name}
+                imageUrl={p.resolvedImageUrl ?? undefined}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

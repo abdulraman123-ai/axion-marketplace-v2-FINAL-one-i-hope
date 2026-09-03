@@ -34,6 +34,8 @@ export function ProductCard({
             <img
               src={imageUrl}
               alt={name}
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
           </div>
@@ -81,11 +83,11 @@ export function ProductCard({
               <p className="text-[11px] uppercase tracking-[0.24em] text-text-secondary">
                 Price
               </p>
-              <p className="mt-1 text-xl font-semibold text-text-primary">
+              <p className="mt-1 text-xl font-semibold text-accent">
                 {priceLabel}
               </p>
             </div>
-            <span className="inline-flex items-center gap-1 text-sm font-medium text-accent transition-transform duration-200 group-hover:translate-x-1">
+            <span className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-surface px-3 py-1.5 text-xs font-semibold text-accent transition-all duration-200 group-hover:border-accent/30 group-hover:translate-x-1">
               View product
               <span aria-hidden="true">→</span>
             </span>

@@ -23,6 +23,7 @@ interface ProductWithFiles {
   support_url: string | null;
   lemon_squeezy_variant_id: string | null;
   preview_url: string | null;
+  selar_url: string | null;
   screenshots: string[];
   product_files: { storage_path: string }[];
 }
@@ -82,6 +83,7 @@ export default async function AdminEditProductPage({ params }: { params: Promise
     support_url: typedProduct.support_url,
     lemon_squeezy_variant_id: typedProduct.lemon_squeezy_variant_id,
     preview_url: typedProduct.preview_url,
+    selar_url: typedProduct.selar_url,
     screenshots: typedProduct.screenshots,
     download_url: typedProduct.product_files?.[0]?.storage_path ?? "",
   };

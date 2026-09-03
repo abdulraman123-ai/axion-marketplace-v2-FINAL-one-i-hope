@@ -36,6 +36,7 @@ export async function PUT(
     supportUrl?: unknown;
     lemonSqueezyVariantId?: unknown;
     previewUrl?: unknown;
+    selarUrl?: unknown;
     slug?: unknown;
   };
 
@@ -45,7 +46,7 @@ export async function PUT(
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const { name, description, shortSummary, priceCents, imageUrl, downloadUrl, screenshots, categoryId, isComingSoon, isPublished, isFeatured, version, changelog, docUrl, supportUrl, lemonSqueezyVariantId, previewUrl, slug } = body;
+  const { name, description, shortSummary, priceCents, imageUrl, downloadUrl, screenshots, categoryId, isComingSoon, isPublished, isFeatured, version, changelog, docUrl, supportUrl, lemonSqueezyVariantId, previewUrl, selarUrl, slug } = body;
 
   if (
     typeof name !== "string" ||
@@ -94,6 +95,37 @@ export async function PUT(
 
   if (typeof previewUrl === "string" && previewUrl.trim()) {
     updatePayload.preview_url = previewUrl.trim();
+  }
+
+  let validatedSelarUrl: string | null = null;
+  if (typeof selarUrl === "string" && selarUrl.trim()) {
+    const trimmed = selarUrl.trim();
+    try {
+      const parsed = new URL(trimmed);
+      if (parsed.protocol !== "https:") {
+        return NextResponse.json(
+          { error: "Selar URL must use HTTPS." },
+          { status: 400 }
+        );
+      }
+      const host = parsed.hostname.toLowerCase();
+      if (host !== "selar.com" && !host.endsWith(".selar.com")) {
+        return NextResponse.json(
+          { error: "Selar URL must be from the selar.com domain." },
+          { status: 400 }
+        );
+      }
+      validatedSelarUrl = parsed.toString();
+    } catch {
+      return NextResponse.json(
+        { error: "Selar URL must be a valid HTTPS URL." },
+        { status: 400 }
+      );
+    }
+  }
+
+  if (validatedSelarUrl !== null) {
+    updatePayload.selar_url = validatedSelarUrl;
   }
 
   const { error: productError } = await serviceClient
