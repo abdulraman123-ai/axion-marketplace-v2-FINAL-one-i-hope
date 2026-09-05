@@ -79,6 +79,20 @@ export async function POST(
     return NextResponse.json({ error: "Failed to upload file." }, { status: 500 });
   }
 
+  if (assetType === "thumbnail") {
+    const { error: imageLinkError } = await serviceClient
+      .from("products")
+      .update({ image_url: filePath })
+      .eq("id", id);
+
+    if (imageLinkError) {
+      return NextResponse.json(
+        { error: "Thumbnail uploaded, but failed to link it to the product." },
+        { status: 500 }
+      );
+    }
+  }
+
   await logAuditEvent({
     action: "product_asset_uploaded",
     actorUserId: user?.id ?? null,

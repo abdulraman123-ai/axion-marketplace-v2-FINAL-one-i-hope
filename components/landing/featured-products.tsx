@@ -1,19 +1,21 @@
 import Link from "next/link";
 import { ArrowRight, Layers3 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { resolveProductImageUrl } from "@/lib/images";
 
 interface FeaturedProduct {
   id: string;
   name: string;
   description: string | null;
   short_summary: string | null;
+  image_url: string | null;
 }
 
 export async function FeaturedProducts() {
   const supabase = await createClient();
   const { data: products } = await supabase
     .from("products")
-    .select("id, name, description, short_summary")
+    .select("id, name, description, short_summary, image_url")
     .eq("is_published", true)
     .eq("is_featured", true)
     .order("created_at", { ascending: false })
@@ -24,6 +26,13 @@ export async function FeaturedProducts() {
   if (featured.length === 0) {
     return null;
   }
+
+  const resolvedFeatured = await Promise.all(
+    featured.map(async (product) => ({
+      ...product,
+      resolvedImageUrl: await resolveProductImageUrl(product.image_url),
+    }))
+  );
 
   return (
     <section id="featured-products" className="border-b border-border/80 px-6 py-24 sm:px-12 lg:py-28">
@@ -42,11 +51,23 @@ export async function FeaturedProducts() {
         </div>
 
         <div className="mt-12 grid gap-5 lg:grid-cols-2">
-          {featured.map((product) => (
+          {resolvedFeatured.map((product) => (
             <article
               key={product.id}
               className="group overflow-hidden rounded-[1.35rem] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_22px_70px_rgba(0,0,0,0.28)]"
             >
+              {product.resolvedImageUrl && (
+                <div className="aspect-video w-full overflow-hidden border-b border-border/70 bg-surface">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={product.resolvedImageUrl}
+                    alt={product.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
+                </div>
+              )}
               <div className="border-b border-border/70 bg-surface-elevated/55 p-6 sm:p-7">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-xs font-medium uppercase tracking-wider text-text-secondary">
