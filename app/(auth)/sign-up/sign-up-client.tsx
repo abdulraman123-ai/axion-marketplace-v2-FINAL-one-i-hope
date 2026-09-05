@@ -4,9 +4,21 @@ import { useState, useEffect, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { getSupabaseUrl } from "@/lib/env";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Input } from "@/components/ui/input";
+
+function getSupabaseHost(): string | undefined {
+  try {
+    const url = getSupabaseUrl();
+    if (!url) return undefined;
+    const host = url.split("//")[1]?.split("/")[0];
+    return host ?? url;
+  } catch {
+    return undefined;
+  }
+}
 
 export default function SignUpClient() {
   const router = useRouter();
@@ -60,6 +72,15 @@ export default function SignUpClient() {
       },
     });
 
+    console.log("[Axion SignUp Diagnostic]", {
+      supabaseHost: getSupabaseHost(),
+      signupError: !!error,
+      errorMessage: error?.message ?? null,
+      userReturned: !!data?.user,
+      sessionReturned: !!data?.session,
+      emailConfirmed: !!data?.user?.email_confirmed_at,
+    });
+
     if (error) {
       setError(error.message);
       setLoading(false);
@@ -69,6 +90,24 @@ export default function SignUpClient() {
     if (data.session) {
       window.location.href = "/dashboard";
       return;
+    }
+
+    if (data.user) {
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInData.session) {
+        window.location.href = "/dashboard";
+        return;
+      }
+
+      if (signInError) {
+        setError(signInError.message);
+        setLoading(false);
+        return;
+      }
     }
 
     setSubmitted(true);
