@@ -2,6 +2,7 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { FounderConsolePage } from "@/components/admin/founder-console-page";
 import { ConsoleCard } from "@/components/admin/console-card";
 import { UserRoleManager } from "@/components/admin/user-role-manager";
+import { UserDeleteButton } from "@/components/admin/user-delete-button";
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/env";
 
 interface UserWithProfile {
@@ -86,8 +87,9 @@ export default async function AdminUsersPage() {
                     Joined {new Date(user.created_at).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="sm:flex-shrink-0">
+                <div className="flex items-center gap-2 sm:flex-shrink-0">
                   <UserRoleManager userId={user.id} currentRoles={user.roles} allRoles={allRoles} />
+                  <UserDeleteButton userId={user.id} userEmail={user.email} />
                 </div>
               </div>
             ))}

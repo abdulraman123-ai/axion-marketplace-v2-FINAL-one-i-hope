@@ -147,7 +147,7 @@ export async function PUT(
     const trimmed = downloadUrl.trim();
     let storagePath = trimmed;
 
-    if (trimmed.startsWith("product-files/")) {
+    if (trimmed.startsWith("product-files/") || !trimmed.includes("://")) {
       storagePath = trimmed;
     } else {
       let parsedDownloadUrl: URL;

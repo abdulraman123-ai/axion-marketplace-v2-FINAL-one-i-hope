@@ -39,24 +39,28 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  try {
-    const { data, error } = await supabase.auth.getClaims();
+  const pathname = request.nextUrl.pathname;
+  const isAdminRoute = pathname.startsWith("/admin");
 
-    if (error) {
-      throw error;
+  if (isAdminRoute) {
+    try {
+      const { data, error } = await supabase.auth.getClaims();
+
+      if (error) {
+        throw error;
+      }
+
+      const claims = data?.claims ?? null;
+
+      if (!claims) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/sign-in";
+        url.searchParams.set("next", pathname);
+        return NextResponse.redirect(url);
+      }
+    } catch {
+      // Session refresh failed — pass through rather than breaking the route.
     }
-
-    const claims = data?.claims ?? null;
-
-    const pathname = request.nextUrl.pathname;
-    if (pathname.startsWith("/admin") && !claims) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/sign-in";
-      url.searchParams.set("next", pathname);
-      return NextResponse.redirect(url);
-    }
-  } catch {
-    // Session refresh failed — pass through rather than breaking the route.
   }
 
   return supabaseResponse;

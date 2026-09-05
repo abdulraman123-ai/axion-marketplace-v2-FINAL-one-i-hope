@@ -1,15 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { SignOutButton } from "@/components/sign-out-button";
+import { createClient } from "@/lib/supabase/client";
 
-interface MobileMenuProps {
-  user: { email?: string } | null;
-}
-
-export function MobileMenu({ user }: MobileMenuProps) {
+export function MobileMenu() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }: { data: { user: any } }) => {
+      setUser(data.user);
+    });
+  }, []);
 
   return (
     <div className="sm:hidden">

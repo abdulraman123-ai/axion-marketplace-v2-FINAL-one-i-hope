@@ -2,6 +2,7 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/env";
 
 const SIGNED_URL_TTL = 3600;
+const signedUrlCache = new Map<string, string>();
 
 export async function resolveProductImageUrl(
   imageUrl: string | null | undefined
@@ -9,6 +10,11 @@ export async function resolveProductImageUrl(
   if (!imageUrl) return null;
   if (/^https?:\/\//i.test(imageUrl)) return imageUrl;
   if (!imageUrl.startsWith("product-files/")) return imageUrl;
+
+  const cached = signedUrlCache.get(imageUrl);
+  if (cached) {
+    return cached;
+  }
 
   const supabaseUrl = getSupabaseUrl();
   const serviceRoleKey = getSupabaseServiceRoleKey();
@@ -19,5 +25,7 @@ export async function resolveProductImageUrl(
     .from("product-files")
     .createSignedUrl(imageUrl, SIGNED_URL_TTL);
 
-  return data?.signedUrl ?? imageUrl;
+  const signedUrl = data?.signedUrl ?? imageUrl;
+  signedUrlCache.set(imageUrl, signedUrl);
+  return signedUrl;
 }
