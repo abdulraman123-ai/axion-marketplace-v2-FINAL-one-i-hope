@@ -55,7 +55,7 @@ export default function HomePage() {
           </div>
           <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/45">
             <span className="inline-flex items-center gap-1.5"><Check size={14} className="text-emerald-300" /> No account needed for basic tools</span>
-            <span className="inline-flex items-center gap-1.5"><Check size={14} className="text-emerald-300" /> Your text is not saved by this prototype</span>
+            <span className="inline-flex items-center gap-1.5"><Check size={14} className="text-emerald-300" /> AI only runs when you choose it</span>
           </div>
         </div>
 
@@ -74,7 +74,7 @@ export default function HomePage() {
             <div className="rounded-2xl border border-violet-300/15 bg-violet-300/[0.07] p-4">
               <div className="mb-2 flex items-center gap-2 text-xs font-medium text-violet-200"><Sparkles size={14} /> CLEAR RESULT</div>
               <p className="text-sm leading-6 text-white/90">“Help me prioritise tomorrow’s tasks by urgency and importance, then turn them into a simple plan I can follow.”</p>
-              <div className="mt-3 text-[11px] text-white/40">Illustrative example — AI results require a configured provider.</div>
+              <div className="mt-3 text-[11px] text-white/40">Example only. Use ChatGPT manually for free, or configure direct AI later.</div>
             </div>
             <Link href="/studio" className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-white/[0.07] px-4 py-3 text-sm font-semibold transition hover:bg-white/[0.12]">Try it with your own words <ArrowRight size={16} /></Link>
           </div>
