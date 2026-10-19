@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 
 const siteUrl = getSiteUrl();
 const metadataBase = new URL(siteUrl);
-const title = "VoxKit — Turn your voice into clear writing";
+const title = "VoxKit — ChatGPT Writing Workflow";
 const description =
-  "Speak or paste a rough thought, choose the result you need, and turn it into clear writing, notes, or replies with VoxKit.";
+  "A reusable ChatGPT workflow package for turning rough thoughts and speech transcripts into clear writing, study notes, debate preparation, and replies.";
 
 export const metadata: Metadata = {
   metadataBase,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   description,
   applicationName: "VoxKit",
-  keywords: ["voice to text", "writing assistant", "speech notes", "AI writing", "voice toolkit"],
+  keywords: ["ChatGPT plugin", "ChatGPT skill", "writing workflow", "debate preparation", "study notes", "voice transcript cleanup"],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -60,12 +60,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const organizationSchema = {
+  const websiteSchema = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
+    "@type": "WebSite",
     name: "VoxKit",
-    applicationCategory: "ProductivityApplication",
-    operatingSystem: "Web",
     description,
     url: siteUrl,
   };
@@ -83,7 +81,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </body>
     </html>
