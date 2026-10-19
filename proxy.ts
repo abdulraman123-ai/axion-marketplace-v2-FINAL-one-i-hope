@@ -7,14 +7,14 @@ export async function proxy(request: NextRequest) {
   // Allow only the product UI, its opt-in AI status/process endpoint, and assets.
   const pathname = request.nextUrl.pathname;
   const normalizedPath =
-    pathname.length > 1 ? pathname.replace(/\\/+$/, "") : pathname;
+    pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
   const isProductRoute =
     normalizedPath === "/" ||
     normalizedPath === "/studio" ||
     normalizedPath === "/api/ai/process";
   const isStaticAsset =
     normalizedPath.startsWith("/_next/") ||
-    /\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|txt|xml|css|js|woff|woff2|ttf|otf|pdf)$/i.test(
+    /\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|txt|xml|css|js|woff|woff2|ttf|otf|pdf)$/i.test(
       normalizedPath,
     );
 
@@ -87,5 +87,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const matcher = [
-  "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
+  "/((?!_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
 ];
