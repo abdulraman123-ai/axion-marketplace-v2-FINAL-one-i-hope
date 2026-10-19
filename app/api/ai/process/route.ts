@@ -71,9 +71,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Too many requests from this connection. Please try again in a few minutes." }, { status: 429 });
     }
 
+    const task = body.task as keyof typeof taskInstructions;
     const instruction = [
       "You are VoxKit, a writing assistant that makes spoken thoughts and rough notes useful.",
-      taskInstructions[body.task],
+      taskInstructions[task],
       "Follow the requested task without pretending to verify facts you have not checked.",
       "Preserve the user's language unless translation is explicitly requested.",
       "Do not add a long preamble. Return only the useful result.",
