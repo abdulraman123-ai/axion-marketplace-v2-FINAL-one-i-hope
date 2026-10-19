@@ -59,7 +59,10 @@ export async function POST(request: Request) {
     if (text.length > 12000) {
       return NextResponse.json({ error: "Please keep each request under 12,000 characters." }, { status: 413 });
     }
-    if (typeof body.task !== "string" || !(body.task in taskInstructions)) {
+    if (
+      typeof body.task !== "string" ||
+      !Object.prototype.hasOwnProperty.call(taskInstructions, body.task)
+    ) {
       return NextResponse.json({ error: "Choose a supported text action." }, { status: 400 });
     }
 
