@@ -1,8 +1,36 @@
-# VoxKit — voice-to-writing studio
+# VoxKit — ChatGPT Writing Workflow
 
-VoxKit is the product branch built from the Axion Marketplace codebase. It makes one job easy: **speak or type a rough thought, choose the result you want, and get text you can use**.
+VoxKit is now positioned as a portable ChatGPT workflow product, not a hosted AI editor. The website explains the product and serves a download of its skills-only plugin package.
 
-## Try it locally
+## Product package
+
+The source package lives in `voxkit-chatgpt-plugin/`:
+
+- `plugin.json`: portable plugin manifest.
+- `skills/voxkit-writing/SKILL.md`: reusable writing workflow instructions.
+- `README.md`: package notes.
+
+The website's `/api/download` route builds a ZIP archive at request time. It contains the plugin manifest and skill instructions under one top-level `voxkit-chatgpt-plugin/` directory.
+
+## What the skill does
+
+- Clarifies rough writing and cleans up speech transcripts.
+- Summarises material and makes study notes.
+- Drafts polished messages, replies, and posts.
+- Structures debate preparation: claims, reasons, evidence to verify, counterarguments, rebuttals, and questions.
+- Preserves the user's meaning and does not invent facts, citations, Bible verses, statistics, or quotations.
+
+## ChatGPT distribution status
+
+This is a **draft package, not an approved or published directory listing**. OpenAI's current Plugin directory supports skills-only packages. Public distribution requires developer identity verification and automated checks/review. Follow the current official steps at https://developers.openai.com/plugins/deploy/submission. Approval and availability are not guaranteed.
+
+Personal ChatGPT Free accounts cannot create new custom GPTs. This package is designed as a skills-only plugin instead, but uploading it for directory distribution still requires the applicable developer-portal permissions and verification.
+
+## AI and cost behavior
+
+The website does not send prompts to OpenAI or Gemini APIs. It does not contain an API key, and there is no seller-paid inference configured. When the skill is used in a supported ChatGPT environment, it relies on the host's available AI and plan limits. The package does not grant a user extra ChatGPT usage or bypass account limits.
+
+## Local development
 
 Requires Node.js 20 or newer.
 
@@ -11,50 +39,20 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The product landing page links to the studio at /studio.
+Open http://localhost:3000. The homepage describes the ChatGPT product. The package download is served from `/api/download`.
 
-To verify the application compiles:
+Check the code compiles:
 
 ```bash
 npm run build
 npm run lint
 ```
 
-## What it does
+## Safety and release notes
 
-- **Voice input:** uses the browser Web Speech API when supported. If unavailable, type into the editor.
-- **Text outcomes:** clearer writing, summaries, bullet points, professional wording, debate-note structure, and reply drafting.
-- **Free ChatGPT handoff:** when direct AI has not been configured, VoxKit copies a task-specific prompt and opens ChatGPT in another tab. The user pastes the prompt into ChatGPT, then pastes the answer back into VoxKit. This uses the ChatGPT website manually; it is not a direct in-app API integration.
-- **Output:** edit, copy, download, or read text aloud using browser speech synthesis.
-- **Quick local tools:** whitespace cleanup and bullet formatting run without an AI request.
-
-The app has a deliberately small workflow rather than a complicated audio control panel. It does not store user text in an application database in this prototype.
-
-## AI provider configuration (off by default)
-
-VoxKit includes a server-side OpenAI Responses API route at `app/api/ai/process/route.ts`. It is deliberately disabled unless both conditions are met:
-
-```dotenv
-OPENAI_API_KEY= # set only in your server environment; never commit a real key
-OPENAI_MODEL=gpt-5.5
-VOXKIT_AI_ENABLED=true
-```
-
-Do **not** add a key to client-side variables, source files, or GitHub. The OpenAI API has separate billing from ChatGPT subscriptions. No API request is made by VoxKit unless the deployment owner deliberately enables this integration and a user clicks the direct AI action.
-
-Before turning on paid API usage for public users, add a durable rate limiter, authentication or verified-user quotas, per-user limits, cost alerts, abuse controls, and a clear privacy notice. The current in-memory rate limit is prototype protection only and is not sufficient against distributed abuse in serverless production.
-
-`OPENAI_API_KEY` belongs in a local `.env.local` file or a server-side Vercel environment variable. Keep it out of all client-side variables.
-
-## Privacy and service behavior
-
-- VoxKit itself does not save the editor text to a database or browser storage.
-- Browser speech recognition is browser-dependent; the browser vendor may process audio remotely.
-- In free handoff mode, the user decides what to copy and send to ChatGPT.
-- When direct AI is enabled, text is transmitted to the configured OpenAI API. Review the provider's current privacy and retention terms before using sensitive content.
-- Speech playback depends on available browser/system voices.
-- No purchases, API credits, or paid services are configured by default.
-
-## Current status and next steps
-
-This is a working product foundation, not yet a launch-ready commercial service. Check the build output and run the manual QA in `docs/VOXKIT_QA.md`. Before selling it, review license obligations for all inherited dependencies/assets, finish accessibility and browser testing, create a complete privacy/terms page for this product, and secure the direct AI API behind durable quotas. For a separate repository, copy this branch into a new GitHub repository; this current workspace keeps the product isolated on its own branch so Axion's `main` branch remains unchanged.
+- No API credentials are required for the website or package.
+- Do not advertise VoxKit as officially published until an approved public listing exists.
+- Do not claim that installation is supported in every personal ChatGPT account; plugin and skills availability depends on the host and account.
+- Review OpenAI's current package requirements before each submission.
+- The standalone Studio route was retired in favor of the ChatGPT-native product package.
+- This product branch remains separate from Axion's `main` branch.
