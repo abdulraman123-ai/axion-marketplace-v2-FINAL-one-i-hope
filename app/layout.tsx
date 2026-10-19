@@ -1,83 +1,50 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { getSiteUrl } from "@/lib/site";
 
-// The ported design uses Geist (Vercel's font family). Loading it via
-// next/font/google, same pattern as before — optimized automatically,
-// no separate font files to manage.
 const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",
 });
-
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
 });
 
-import { getSiteUrl } from "@/lib/site";
-
-// TODO: replace the default production domain once the deployed site URL is known.
 const siteUrl = getSiteUrl();
 const metadataBase = new URL(siteUrl);
-const defaultTitle = "Axion Marketplace — Premium Digital Products";
-const defaultDescription =
-  "Discover premium digital products built by Axion for modern teams. Browse practical systems, templates, and assets for business operations and execution.";
+const title = "VoxKit — Turn your voice into clear writing";
+const description =
+  "Speak or paste a rough thought, choose the result you need, and turn it into clear writing, notes, or replies with VoxKit.";
 
 export const metadata: Metadata = {
   metadataBase,
   title: {
-    default: defaultTitle,
-    template: "%s | Axion Marketplace",
+    default: title,
+    template: "%s | VoxKit",
   },
-  description: defaultDescription,
-  keywords: [
-    "digital products",
-    "templates",
-    "business systems",
-    "productivity tools",
-    "axion marketplace",
-  ],
-  applicationName: "Axion Marketplace",
-  category: "business",
-  alternates: {
-    canonical: "/",
-  },
+  description,
+  applicationName: "VoxKit",
+  keywords: ["voice to text", "writing assistant", "speech notes", "AI writing", "voice toolkit"],
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
-    title: defaultTitle,
-    description: defaultDescription,
-    siteName: "Axion Marketplace",
-    images: [
-      {
-        url: "/og-image.svg",
-        width: 1200,
-        height: 630,
-        alt: "Axion Marketplace",
-      },
-    ],
+    title,
+    description,
+    siteName: "VoxKit",
   },
   twitter: {
-    card: "summary_large_image",
-    title: defaultTitle,
-    description: defaultDescription,
-    images: ["/twitter-image.svg"],
+    card: "summary",
+    title,
+    description,
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-    },
-  },
-  manifest: "/manifest.webmanifest",
-  icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    googleBot: { index: true, follow: true },
   },
 };
 
@@ -85,10 +52,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   colorScheme: "dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-  ],
+  themeColor: "#0d0e14",
 };
 
 export default function RootLayout({
@@ -98,51 +62,20 @@ export default function RootLayout({
 }>) {
   const organizationSchema = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Axion Marketplace",
+    "@type": "SoftwareApplication",
+    name: "VoxKit",
+    applicationCategory: "ProductivityApplication",
+    operatingSystem: "Web",
+    description,
     url: siteUrl,
-    description: defaultDescription,
-    logo: new URL("/icon.svg", metadataBase).toString(),
-  };
-
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "Axion Marketplace",
-    url: siteUrl,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteUrl}/products`,
-      "query-input": "required name=search_term_string",
-    },
   };
 
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-background text-text-primary">
-        <div
-          aria-hidden="true"
-          className="fixed inset-0 -z-10 overflow-hidden pointer-events-none"
-        >
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            aria-hidden="true"
-            className="h-full w-full object-cover opacity-30"
-          >
-            <source src="/axion-dark-city-loop.webm" type="video/webm" />
-          </video>
-          <div className="absolute inset-0 bg-background/70" />
-        </div>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <body className="min-h-full bg-[#0d0e14] font-sans text-white">
         <a
           href="#content"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:text-text-primary"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
         >
           Skip to content
         </a>
@@ -150,9 +83,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([organizationSchema, websiteSchema]),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </body>
     </html>
