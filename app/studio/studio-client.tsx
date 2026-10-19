@@ -174,9 +174,11 @@ export function StudioClient() {
         setStatus("Done. Review the result, then copy it or hear it aloud.");
       } else {
         setPrompt(promptText);
-        await copyToClipboard(promptText, "Prompt copied. Paste it into the ChatGPT tab, then bring ChatGPT’s answer back into the result box.");
+        // Open the tab during the click handler, before any await, so browsers
+        // are less likely to treat it as an unsolicited popup.
         window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer");
-        setStatus("Free handoff ready: paste the copied prompt into ChatGPT. Then paste its answer into Your result.");
+        await copyToClipboard(promptText, "Prompt copied. Paste it into the ChatGPT tab, then bring ChatGPT’s answer back into the result box.");
+        setStatus("Free handoff ready: paste the copied prompt into ChatGPT. If no new tab appeared, use Open ChatGPT below.");
       }
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Something went wrong. Please try again.");
