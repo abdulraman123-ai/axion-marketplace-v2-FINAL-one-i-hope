@@ -59,7 +59,6 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  const pathname = request.nextUrl.pathname;
   const isAdminRoute = pathname.startsWith("/admin");
 
   if (isAdminRoute) {
