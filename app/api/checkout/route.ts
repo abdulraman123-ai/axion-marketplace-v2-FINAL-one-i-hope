@@ -14,29 +14,8 @@ import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/env";
 import { getSiteUrl } from "@/lib/site";
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient();
-
-  // Who's asking? Checkout requires being signed in — an anonymous visitor
-  // should never be able to start a purchase, since we need a real user_id
-  // to attach to the order later.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { error: "You need to sign in before buying a product." },
-      { status: 401 }
-    );
-  }
-
-  if (!user.email) {
-    return NextResponse.json(
-      { error: "Your account is missing an email address." },
-      { status: 400 }
-    );
-  }
-
+  // Read the product's provider first. Selar hosts its own checkout and
+  // does not require an Axion account; Lemon Squeezy still requires sign-in.
   let productId: string | undefined;
   try {
     const body = await request.json();
@@ -137,6 +116,26 @@ export async function POST(request: NextRequest) {
         { status: 409 }
       );
     }
+  }
+
+  // Only the Lemon Squeezy flow needs an authenticated Axion user.
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "You need to sign in before buying a product." },
+      { status: 401 }
+    );
+  }
+
+  if (!user.email) {
+    return NextResponse.json(
+      { error: "Your account is missing an email address." },
+      { status: 400 }
+    );
   }
 
   if (!product.lemon_squeezy_variant_id) {
