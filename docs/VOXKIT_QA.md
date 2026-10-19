@@ -1,33 +1,26 @@
 # VoxKit manual quality checklist
 
-## Landing page
-- [ ] Visit / and confirm it explains the product in one sentence.
-- [ ] Click both primary calls to action; each should open /studio.
+## Product homepage
+- [ ] Visit / and confirm it explains VoxKit as a ChatGPT workflow package.
+- [ ] Confirm the primary CTA downloads a ZIP from /api/download.
 - [ ] Check the page at 375px mobile and a desktop viewport.
-- [ ] Confirm no Axion Marketplace video background or marketplace navigation appears.
+- [ ] Confirm no Axion Marketplace navigation or checkout is exposed.
 
-## Studio
-- [ ] Type a sentence, choose each task, and click the main action.
-- [ ] Confirm default free mode copies a task-specific prompt and opens https://chatgpt.com/.
-- [ ] If the clipboard is blocked, confirm the prompt appears visibly and can be copied manually.
-- [ ] Paste an example ChatGPT result into the result editor.
-- [ ] Copy, download, and play back the result.
-- [ ] Use Clean up text and Bullet points; they should not make an API request.
-- [ ] Test mic permission allowed, denied, and unsupported browser.
-- [ ] Test Turkish, English, and a longer transcript.
-- [ ] Confirm clearing input and results works.
+## Package download
+- [ ] Request /api/download and verify HTTP 200 with Content-Type application/zip.
+- [ ] Open the downloaded ZIP and confirm one top-level folder named voxkit-chatgpt-plugin.
+- [ ] Confirm plugin.json is valid JSON at the package root.
+- [ ] Confirm skills/voxkit-writing/SKILL.md is UTF-8 text with valid YAML front matter.
+- [ ] Upload the ZIP to the official Plugin directory draft flow and resolve the automated package findings before submitting.
 
-## API safeguards
-- [ ] With no env settings, GET /api/ai/process returns available=false.
-- [ ] With VOXKIT_AI_ENABLED=false, POST /api/ai/process must not call OpenAI even if a key exists.
-- [ ] With AI explicitly enabled only in a non-public test environment, send one small test request.
-- [ ] Check that the API key never appears in client code, page source, responses, or Git history.
-- [ ] Verify invalid tasks, empty input, oversized text, provider failure, and rate limit responses.
+## AI billing and privacy
+- [ ] GET /api/ai/process returns available=false and mode=chatgpt-skill-package.
+- [ ] POST /api/ai/process returns HTTP 410 and does not call OpenAI or Gemini.
+- [ ] Confirm no AI API key is needed by the website or included in Git history or client assets.
+- [ ] Verify the old /studio route redirects to the product homepage.
 
-## Before commercial release
-- [ ] Run npm run lint and npm run build.
-- [ ] Add a durable request quota/rate limiter and user-level cost limits before enabling paid API calls publicly.
-- [ ] Add user-facing privacy/terms appropriate to the deployed service.
-- [ ] Review licenses for inherited code and assets.
-- [ ] Configure a real site URL and metadata.
-- [ ] Run automated browser tests and accessibility checks.
+## Before public distribution
+- [ ] Complete developer identity verification and submit the skills-only package using the current official OpenAI process.
+- [ ] Do not describe VoxKit as approved or publicly listed before approval.
+- [ ] Review OpenAI's latest directory guidelines, account availability, and support requirements.
+- [ ] Check npm run lint and npm run build.
