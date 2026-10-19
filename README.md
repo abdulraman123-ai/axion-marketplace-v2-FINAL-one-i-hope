@@ -1,76 +1,60 @@
-# Axion Marketplace
+# VoxKit — voice-to-writing studio
 
-**What's actually working right now:** the full dark "Midnight Premium" design, Supabase-backed sign-up/sign-in, product listing and detail pages reading real data, a founder-gated admin page for adding products, checkout wired end-to-end through auth and the database, and — new — **actual download delivery**: a "My Purchases" dashboard and a download route that only serves a file to someone who genuinely bought it, enforced by the database itself (RLS), not just application code.
+VoxKit is the product branch built from the Axion Marketplace codebase. It makes one job easy: **speak or type a rough thought, choose the result you want, and get text you can use**.
 
-**What's NOT built yet:** categories (there's a column for it, no UI yet), and the later-stage polish items — SEO, performance, accessibility, error handling, automated testing, production deployment hardening.
+## Try it locally
 
-**On Lemon Squeezy specifically:** the checkout and webhook code is complete and will build/deploy fine as-is. It just can't actually process a real payment until a Lemon Squeezy account is fully registered and its keys are added to `.env.local` / Vercel. Trying to buy something before then fails with a clear, expected error — that's correct behavior, not a bug.
-
----
-
-## 1. Before you do anything: local setup
-
-You'll need **Node.js 20 or newer** (24 recommended, matching the original project).
+Requires Node.js 20 or newer.
 
 ```bash
 npm install
-```
-
-## 2. Test the build locally FIRST — do this before pushing anywhere
-
-This is the single most important step for avoiding errors on Vercel. A failed build on your machine takes seconds to see; a failed build on Vercel costs a deploy cycle.
-
-```bash
-npm run build
-```
-
-If this completes with no red output, you're safe to deploy. If it fails, the error will point to the exact file/line — fix that before pushing.
-
-Then confirm it actually runs:
-
-```bash
 npm run dev
 ```
 
-Open `http://localhost:3000` — you should see the placeholder homepage.
+Open http://localhost:3000. The product landing page links to the studio at /studio.
 
-## 3. Push to GitHub
+To verify the application compiles:
 
 ```bash
-git init
-git add .
-git commit -m "Foundation: Next.js scaffold + design system (Milestones 1-2)"
-git branch -M main
-git remote add origin <your-empty-github-repo-url>
-git push -u origin main
+npm run build
+npm run lint
 ```
 
-(If you already have a GitHub repo for this project, skip `git init`/`remote add` and just commit + push to it instead.)
+## What it does
 
-## 4. Deploy to Vercel
+- **Voice input:** uses the browser Web Speech API when supported. If unavailable, type into the editor.
+- **Text outcomes:** clearer writing, summaries, bullet points, professional wording, debate-note structure, and reply drafting.
+- **Free ChatGPT handoff:** when direct AI has not been configured, VoxKit copies a task-specific prompt and opens ChatGPT in another tab. The user pastes the prompt into ChatGPT, then pastes the answer back into VoxKit. This uses the ChatGPT website manually; it is not a direct in-app API integration.
+- **Output:** edit, copy, download, or read text aloud using browser speech synthesis.
+- **Quick local tools:** whitespace cleanup and bullet formatting run without an AI request.
 
-1. Go to [vercel.com/new](https://vercel.com/new) and import the GitHub repo you just pushed.
-2. **Framework Preset:** Vercel reads `next` from `package.json` and auto-detects **Next.js** — you don't need to pick anything manually. If you ever see a dropdown, confirm it says "Next.js," not "Other."
-3. **Root Directory:** set to wherever this project's `package.json` actually lives in your repo (check what you already have configured — this may already be correct).
-4. **Environment Variables:** add the three Supabase values from `.env.example` (real values, from your Supabase project's Settings > API page). Leave the three Lemon Squeezy ones blank until that account is ready.
-5. **Build Command / Output Directory:** leave the Vercel defaults (`next build` / `.next`) — don't override these.
-6. **Framework Preset:** should already auto-detect as Next.js. If it doesn't, set it explicitly in Settings > Build and Deployment.
-7. Click **Deploy**.
+The app has a deliberately small workflow rather than a complicated audio control panel. It does not store user text in an application database in this prototype.
 
-That's it — you'll get a live `*.vercel.app` URL. Every future push to `main` will auto-deploy.
+## AI provider configuration (off by default)
 
-## 5. A security note worth knowing right now
+VoxKit includes a server-side OpenAI Responses API route at `app/api/ai/process/route.ts`. It is deliberately disabled unless both conditions are met:
 
-Next.js shipped a security patch today (July 21, 2026) — the first release under their new monthly security program, fixing 4 high- and 5 medium-severity issues, following a larger 12-vulnerability patch in May 2026 that covered middleware/route-bypass bugs. `package.json` here specifies `next: ^16.2.10`, so a fresh `npm install` today will pull the patched release automatically. If you ever `npm install` again weeks from now, it's worth a quick `npm outdated` check before deploying, since this cadence is now monthly.
+```dotenv
+OPENAI_API_KEY= # set only in your server environment; never commit a real key
+OPENAI_MODEL=gpt-5.5
+VOXKIT_AI_ENABLED=true
+```
 
-This particularly matters once **Milestone 6 (Protected Routes & Middleware)** is built, since some of the patched vulnerabilities were specifically about middleware-based route protection being bypassable — exactly the mechanism that milestone relies on. Keep Next.js current when we get there.
+Do **not** add a key to client-side variables, source files, or GitHub. The OpenAI API has separate billing from ChatGPT subscriptions. No API request is made by VoxKit unless the deployment owner deliberately enables this integration and a user clicks the direct AI action.
 
-## What to test after deploying this
+Before turning on paid API usage for public users, add a durable rate limiter, authentication or verified-user quotas, per-user limits, cost alerts, abuse controls, and a clear privacy notice. The current in-memory rate limit is prototype protection only and is not sufficient against distributed abuse in serverless production.
 
-1. `/sign-up` → create an account → confirm via email.
-2. `/products` → should show at least one product (add one via Supabase's SQL Editor if the list is empty).
-3. Click into a product → **Buy Now** → expect a clear "not configured yet" error until Lemon Squeezy is registered. That error is the correct, expected outcome right now.
+`OPENAI_API_KEY` belongs in a local `.env.local` file or a server-side Vercel environment variable. Keep it out of all client-side variables.
 
-## What's next
+## Privacy and service behavior
 
-Customer dashboard, real file downloads, and the remaining quality/launch milestones (SEO, performance, accessibility, error handling, testing, production hardening). Nothing further gets implemented until you confirm the above works and say go on the next specific milestone.
+- VoxKit itself does not save the editor text to a database or browser storage.
+- Browser speech recognition is browser-dependent; the browser vendor may process audio remotely.
+- In free handoff mode, the user decides what to copy and send to ChatGPT.
+- When direct AI is enabled, text is transmitted to the configured OpenAI API. Review the provider's current privacy and retention terms before using sensitive content.
+- Speech playback depends on available browser/system voices.
+- No purchases, API credits, or paid services are configured by default.
+
+## Current status and next steps
+
+This is a working product foundation, not yet a launch-ready commercial service. Check the build output and run the manual QA in `docs/VOXKIT_QA.md`. Before selling it, review license obligations for all inherited dependencies/assets, finish accessibility and browser testing, create a complete privacy/terms page for this product, and secure the direct AI API behind durable quotas. For a separate repository, copy this branch into a new GitHub repository; this current workspace keeps the product isolated on its own branch so Axion's `main` branch remains unchanged.
