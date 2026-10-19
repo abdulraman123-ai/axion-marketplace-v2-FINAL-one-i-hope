@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "voxkit-writing-workflow",
+  "version": "1.0.0",
+  "description": "A reusable ChatGPT writing workflow for turning spoken thoughts and rough notes into clear writing, summaries, study notes, debate prep, and thoughtful replies."
+}
