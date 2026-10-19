@@ -2,16 +2,16 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
-  // This branch is the standalone VoxKit product preview, not the Axion shop.
-  // Deny legacy marketplace/auth/admin/checkout routes inherited from Axion.
-  // Allow only the product UI, its opt-in AI status/process endpoint, and assets.
+  // This branch is the standalone VoxKit product package, not the Axion shop.
+  // Block inherited marketplace/auth/admin/checkout routes.
   const pathname = request.nextUrl.pathname;
   const normalizedPath =
     pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
   const isProductRoute =
     normalizedPath === "/" ||
     normalizedPath === "/studio" ||
-    normalizedPath === "/api/ai/process";
+    normalizedPath === "/api/ai/process" ||
+    normalizedPath === "/api/download";
   const isStaticAsset =
     normalizedPath.startsWith("/_next/") ||
     /\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|txt|xml|css|js|woff|woff2|ttf|otf|pdf)$/i.test(
