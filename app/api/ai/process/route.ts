@@ -6,7 +6,7 @@ export async function GET() {
   return NextResponse.json(
     {
       available: false,
-      mode: "chatgpt-skill-package",
+      mode: "clientlaunch-local-workspace",
       model: null,
     },
     { headers: { "Cache-Control": "no-store" } },
@@ -16,7 +16,7 @@ export async function GET() {
 export async function POST() {
   return NextResponse.json(
     {
-      error: "VoxKit has moved to a ChatGPT workflow package. This website does not send AI requests. Download the package from the homepage.",
+      error: "ClientLaunch does not send AI requests. Use the optional copy-and-paste prompts with an AI product you already use, or work directly with the built-in templates.",
     },
     {
       status: 410,
