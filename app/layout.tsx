@@ -14,19 +14,26 @@ const geistMono = Geist_Mono({
 
 const siteUrl = getSiteUrl();
 const metadataBase = new URL(siteUrl);
-const title = "VoxKit — ChatGPT Writing Workflow";
+const title = "ClientLaunch — First-Client Toolkit for Freelancers";
 const description =
-  "A reusable ChatGPT workflow package for turning rough thoughts and speech transcripts into clear writing, study notes, debate preparation, and replies.";
+  "Turn one service into a clear offer, build honest portfolio proof, organize prospects, write specific outreach, and track follow-ups without paid prospecting software.";
 
 export const metadata: Metadata = {
   metadataBase,
   title: {
     default: title,
-    template: "%s | VoxKit",
+    template: "%s | ClientLaunch",
   },
   description,
-  applicationName: "VoxKit",
-  keywords: ["ChatGPT plugin", "ChatGPT skill", "writing workflow", "debate preparation", "study notes", "voice transcript cleanup"],
+  applicationName: "ClientLaunch",
+  keywords: [
+    "freelancer client acquisition",
+    "first client toolkit",
+    "freelance outreach templates",
+    "prospect tracker",
+    "freelance proposal template",
+    "client follow-up workflow",
+  ],
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -34,7 +41,7 @@ export const metadata: Metadata = {
     url: "/",
     title,
     description,
-    siteName: "VoxKit",
+    siteName: "ClientLaunch",
   },
   twitter: {
     card: "summary",
@@ -52,7 +59,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   colorScheme: "dark",
-  themeColor: "#0d0e14",
+  themeColor: "#0d0f12",
 };
 
 export default function RootLayout({
@@ -63,14 +70,14 @@ export default function RootLayout({
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "VoxKit",
+    name: "ClientLaunch",
     description,
     url: siteUrl,
   };
 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#0d0e14] font-sans text-white">
+      <body className="min-h-full bg-[#0d0f12] font-sans text-white">
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-black"
