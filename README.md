@@ -1,58 +1,45 @@
-# VoxKit — ChatGPT Writing Workflow
+# ClientLaunch — First-Client Toolkit for Freelancers
 
-VoxKit is now positioned as a portable ChatGPT workflow product, not a hosted AI editor. The website explains the product and serves a download of its skills-only plugin package.
+ClientLaunch addresses a common early freelance problem: people may be able to do the work but struggle to package one service clearly, demonstrate their skills honestly, contact relevant prospects, and remember follow-ups.
 
-## Product package
+## Product
+A lightweight, local-first workspace plus a reusable digital toolkit for new freelancers and solo service providers.
 
-The source package lives in `voxkit-chatgpt-plugin/`:
+- Offer builder: clarify the service, target buyer, problem, and outcome.
+- Prospect tracker: record public contact details, a verified observation, status, and next follow-up.
+- Message builder: create an individually tailored first message and a respectful follow-up sequence.
+- Optional AI handoff: copy a prompt to your own ChatGPT or Gemini conversation. The website itself does not send AI requests.
+- Proposal builder: define deliverables, timeline, revision limits, fee, payment terms, and exclusions.
+- 30-day plan: check off practical actions.
+- Data portability: export leads to CSV and export/import a browser backup as JSON.
 
-- `plugin.json`: portable plugin manifest.
-- `skills/voxkit-writing/SKILL.md`: reusable writing workflow instructions.
-- `README.md`: package notes.
+## Privacy and cost
+- The workspace stores user-entered data in the local browser storage.
+- No AI API key, hosted AI endpoint, automatic email sending, or paid lead database is required.
+- The app does not promise clients, jobs, or earnings.
+- Users should only record information they have a legitimate reason to use, verify claims before outreach, obey relevant laws, and respect opt-outs.
+- Export a JSON backup before clearing browser data or changing browsers/devices.
 
-The website's `/api/download` route builds a ZIP archive at request time. It contains the plugin manifest and skill instructions under one top-level `voxkit-chatgpt-plugin/` directory.
+## Website routes
+- `/` — product page and value proposition.
+- `/studio` — interactive workspace.
+- `/api/download` — free starter pack sample, not the complete paid toolkit.
+- `/api/ai/process` — retired AI endpoint, returns a disabled response and does not process requests.
 
-## What the skill does
+## Axion Store packaging
+The complete one-time digital-product bundle is delivered separately as `ClientLaunch_Full_Kit.zip`. Add that ZIP to Axion Store as the paid digital download. A suggested initial price to test is US$9; validate the offer with real buyers before investing more time. The website branch does not create a store listing or enable checkout automatically.
 
-- Clarifies rough writing and cleans up speech transcripts.
-- Summarises material and makes study notes.
-- Drafts polished messages, replies, and posts.
-- Structures debate preparation: claims, reasons, evidence to verify, counterarguments, rebuttals, and questions.
-- Preserves the user's meaning and does not invent facts, citations, Bible verses, statistics, or quotations.
-
-## ChatGPT distribution status
-
-This is a **draft package, not an approved or published directory listing**. OpenAI's current Plugin directory supports skills-only packages. Public distribution requires developer identity verification and automated checks/review. Follow the current official steps at https://developers.openai.com/plugins/deploy/submission. Approval and availability are not guaranteed.
-
-Personal ChatGPT Free accounts cannot create new custom GPTs. This package is designed as a skills-only plugin instead, but uploading it for directory distribution still requires the applicable developer-portal permissions and verification.
-
-## AI and cost behavior
-
-The website does not send prompts to OpenAI or Gemini APIs. It does not contain an API key, and there is no seller-paid inference configured. When the skill is used in a supported ChatGPT environment, it relies on the host's available AI and plan limits. The package does not grant a user extra ChatGPT usage or bypass account limits.
+Suggested listing copy is in `docs/AXION_PRODUCT_LISTING.md`.
 
 ## Local development
-
 Requires Node.js 20 or newer.
 
 ```bash
 npm install
 npm run dev
-```
-
-Open http://localhost:3000. The homepage describes the ChatGPT product. The package download is served from `/api/download`.
-
-Check the code compiles:
-
-```bash
 npm run build
 npm run lint
 ```
 
-## Safety and release notes
-
-- No API credentials are required for the website or package.
-- Do not advertise VoxKit as officially published until an approved public listing exists.
-- Do not claim that installation is supported in every personal ChatGPT account; plugin and skills availability depends on the host and account.
-- Review OpenAI's current package requirements before each submission.
-- The standalone Studio route was retired in favor of the ChatGPT-native product package.
-- This product branch remains separate from Axion's `main` branch.
+## Branch safety
+All ClientLaunch changes are on the `voice-toolkit-product` branch. The Axion Marketplace `main` branch has not been changed.
