@@ -1,15 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   ArrowLeft,
   ArrowRight,
   BadgeCheck,
-  BriefcaseBusiness,
   CalendarClock,
   Check,
-  ChevronDown,
   Clipboard,
   Download,
   FileText,
@@ -25,7 +23,6 @@ import {
   Trash2,
   TrendingUp,
   Users,
-  Wallet,
 } from "lucide-react";
 
 type LeadStatus =
@@ -414,7 +411,7 @@ export function StudioClient() {
     setLeadDraft((current) => ({ ...current, [field]: value }));
   }
 
-  function addLead(event?: React.FormEvent<HTMLFormElement>) {
+  function addLead(event?: FormEvent<HTMLFormElement>) {
     event?.preventDefault();
     if (!leadDraft.company.trim()) {
       setStatusMessage("Add a company or prospect name before saving.");
@@ -732,7 +729,7 @@ export function StudioClient() {
               <Field label="Revisions" value={proposal.revisions} onChange={(v) => setProposal((p) => ({ ...p, revisions: v }))} placeholder="e.g. 2 revision rounds" />
               <div className="grid gap-3 sm:grid-cols-2"><Field label="Project fee / currency" value={proposal.price} onChange={(v) => setProposal((p) => ({ ...p, price: v }))} placeholder="e.g. $250" /><Field label="Estimated hours" value={proposal.hours} onChange={(v) => setProposal((p) => ({ ...p, hours: v }))} placeholder="e.g. 8" type="number" /></div>
               <Field label="Direct costs" value={proposal.costs} onChange={(v) => setProposal((p) => ({ ...p, costs: v }))} placeholder="e.g. 20 (same currency as fee)" type="number" />
-              {Number(proposal.hours) > 0 && proposal.price.trim() && Number.isFinite(Number(proposal.price)) && <div className="rounded-xl border border-white/[0.08] bg-black/20 p-3 text-sm text-white/70">Estimated net hourly rate: <strong className="text-emerald-200">{((Number(proposal.price) - (Number(proposal.costs) || 0)) / Number(proposal.hours)).toFixed(2)}</strong> in the entered currency, before tax and overhead.</div>}
+              {Number(proposal.hours) > 0 && proposal.price.trim() && Number.isFinite(Number(proposal.price.replace(/[^0-9.-]/g, ""))) && <div className="rounded-xl border border-white/[0.08] bg-black/20 p-3 text-sm text-white/70">Estimated net hourly rate: <strong className="text-emerald-200">{((Number(proposal.price.replace(/[^0-9.-]/g, "")) - (Number(proposal.costs) || 0)) / Number(proposal.hours)).toFixed(2)}</strong> in the entered currency, before tax and overhead.</div>}
               <TextField label="Payment terms" value={proposal.payment} onChange={(v) => setProposal((p) => ({ ...p, payment: v }))} placeholder="Deposit, milestones, due dates…" rows={2} />
               <TextField label="Not included / boundaries" value={proposal.exclusions} onChange={(v) => setProposal((p) => ({ ...p, exclusions: v }))} placeholder="Out-of-scope requests, extra revisions, third-party costs…" rows={2} />
             </div></section>
