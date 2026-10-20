@@ -2,7 +2,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
-  // This branch is the standalone VoxKit product package, not the Axion shop.
+  // This branch is the standalone ClientLaunch product workspace, not the Axion shop.
   // Block inherited marketplace/auth/admin/checkout routes.
   const pathname = request.nextUrl.pathname;
   const normalizedPath =
