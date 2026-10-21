@@ -22,12 +22,12 @@
   <g font-family="Inter, Arial, sans-serif">
     <text x="92" y="118" fill="#C3BAFF" font-size="24" font-weight="700" letter-spacing="6">AXION DIGITAL TOOLS</text>
     <text x="86" y="300" fill="#FFFFFF" font-size="104" font-weight="800">VoxKit</text>
-    <text x="92" y="368" fill="#BDB9D8" font-size="32" font-weight="500">Voice-to-Text • AI Processing</text>
-    <text x="92" y="412" fill="#BDB9D8" font-size="32" font-weight="500">• Text-to-Speech</text>
+    <text x="92" y="368" fill="#BDB9D8" font-size="32" font-weight="500">Audio Rescue • Creator Tools</text>
+    <text x="92" y="412" fill="#BDB9D8" font-size="32" font-weight="500">Clean • Inspect • Normalize</text>
     <rect x="92" y="480" width="300" height="58" rx="29" fill="url(#accent)"/>
     <text x="242" y="518" text-anchor="middle" fill="#FFFFFF" font-size="22" font-weight="800" letter-spacing="2">CHATGPT SKILL</text>
-    <text x="92" y="626" fill="#FFFFFF" font-size="27" font-weight="700">One file. A clearer voice workflow.</text>
-    <text x="92" y="674" fill="#A5A2B9" font-size="22">Transcribe • Summarize • Translate • Create narration</text>
-    <text x="92" y="834" fill="#7B7896" font-size="18" letter-spacing="3">VOXKIT · VERSION 1.0.0</text>
+    <text x="92" y="626" fill="#FFFFFF" font-size="27" font-weight="700">Clean audio. Keep your originals.</text>
+    <text x="92" y="674" fill="#A5A2B9" font-size="22">Silence reports • Batch cleanup • Export</text>
+    <text x="92" y="834" fill="#7B7896" font-size="18" letter-spacing="3">VOXKIT · VERSION 3.0.0</text>
   </g>
 </svg>
