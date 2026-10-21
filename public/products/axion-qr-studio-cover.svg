@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="t d">
+<title id="t">Axion QR Studio</title><desc id="d">Decorative product cover with QR-inspired artwork, not a scannable code.</desc>
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08111f"/><stop offset="1" stop-color="#101d31"/></linearGradient><linearGradient id="a"><stop stop-color="#64f5cd"/><stop offset="1" stop-color="#b8ff5a"/></linearGradient></defs>
+<rect width="1200" height="900" rx="38" fill="url(#b)"/>
+<rect x="75" y="70" width="210" height="46" rx="23" fill="#152c3a" stroke="#2b736c"/>
+<text x="180" y="100" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" font-weight="700" letter-spacing="4" fill="#83f6d5">AXION TOOLKIT</text>
+<g font-family="Arial,Helvetica,sans-serif"><text x="78" y="270" font-size="84" font-weight="800" fill="#f4f8fb">QR</text><text x="78" y="365" font-size="84" font-weight="800" fill="url(#a)">STUDIO</text>
+<text x="82" y="430" font-size="27" fill="#b9c8d8">Real, customizable QR codes.</text><text x="82" y="470" font-size="27" fill="#b9c8d8">No paid QR service. No API key.</text>
+<g transform="translate(700 178)"><rect width="395" height="395" rx="30" fill="#0c1926" stroke="#29475a" stroke-width="2"/>
+<g fill="url(#a)"><path d="M28 28h112v112H28z M48 48v72h72V48z" fill-rule="evenodd"/><rect x="70" y="70" width="28" height="28"/>
+<path d="M255 28h112v112H255z M275 48v72h72V48z" fill-rule="evenodd"/><rect x="297" y="70" width="28" height="28"/>
+<path d="M28 255h112v112H28z M48 275v72h72V275z" fill-rule="evenodd"/><rect x="70" y="297" width="28" height="28"/>
+<rect x="170" y="28" width="35" height="35" rx="4"/><rect x="170" y="78" width="35" height="35" rx="4"/><rect x="170" y="128" width="35" height="35" rx="4"/>
+<rect x="158" y="183" width="45" height="45" rx="4"/><rect x="220" y="174" width="36" height="36" rx="4"/><rect x="273" y="174" width="36" height="36" rx="4"/><rect x="325" y="174" width="42" height="36" rx="4"/>
+<rect x="170" y="255" width="35" height="35" rx="4"/><rect x="220" y="246" width="36" height="36" rx="4"/><rect x="273" y="246" width="94" height="36" rx="4"/>
+<rect x="170" y="306" width="35" height="61" rx="4"/><rect x="220" y="306" width="36" height="35" rx="4"/><rect x="273" y="306" width="36" height="35" rx="4"/></g>
+<circle cx="335" cy="332" r="40" fill="#132b3a" stroke="#64f5cd" stroke-width="3"/><path d="m317 332 13 13 25-28" stroke="#b8ff5a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
+<g><rect x="80" y="560" width="300" height="66" rx="16" fill="#132a37" stroke="#2b655f"/><circle cx="111" cy="593" r="8" fill="#b8ff5a"/><text x="134" y="601" font-size="21" font-weight="600" fill="#e2edf3">Website • Wi-Fi • Contact</text>
+<rect x="80" y="646" width="300" height="66" rx="16" fill="#132a37" stroke="#2b655f"/><circle cx="111" cy="679" r="8" fill="#64f5cd"/><text x="134" y="687" font-size="21" font-weight="600" fill="#e2edf3">PNG + SVG • Local tool</text></g>
+<text x="80" y="820" font-size="20" letter-spacing="2" fill="#70869a">CHATGPT SKILL + LOCAL GENERATOR</text></g></svg>
